@@ -29,9 +29,12 @@ public class EarthquakeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
+        DownloadTask task = new DownloadTask();
+        ArrayList<EarthquakeData> earthquakes = new ArrayList<>();
+        earthquakes = QueryUtils.extractEarthquakes();
 
         // Create a fake list of earthquake locations.
-        ArrayList<EarthquakeData> earthquakes = new ArrayList<>();
+       /* ArrayList<EarthquakeData> earthquakes = new ArrayList<>();
         earthquakes.add(new EarthquakeData("4-4-1099", "4.3", "San Francisco"));
         earthquakes.add(new EarthquakeData("4-4-1099", "4.3", "London"));
         earthquakes.add(new EarthquakeData("4-4-1099", "4.3", "Tokyo"));
@@ -39,7 +42,8 @@ public class EarthquakeActivity extends AppCompatActivity {
         earthquakes.add(new EarthquakeData("4-4-1099", "4.3", "Moscow"));
         earthquakes.add(new EarthquakeData("4-4-1099", "4.3", "Rio de Janeiro"));
         earthquakes.add(new EarthquakeData("4-4-1099", "4.3", "Paris"));
-
+*/
+        //task.execute("http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2016-01-01&endtime=2016-01-31&minmag=6&limit=10");
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
 
