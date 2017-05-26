@@ -125,6 +125,12 @@ public final class QueryUtils {
      */
     public static ArrayList<EarthquakeData> extractEarthquakes(String jsonResponse) {
 
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // Create an empty ArrayList that we can start adding earthquakes to
         ArrayList<EarthquakeData> earthquakes = new ArrayList<>();
 
