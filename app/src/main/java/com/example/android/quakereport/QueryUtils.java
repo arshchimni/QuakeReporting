@@ -139,11 +139,11 @@ public final class QueryUtils {
                 String url = features.getJSONObject(i).getJSONObject("properties").optString("url");
                 String place = features.getJSONObject(i).getJSONObject("properties").optString("place");
                 String time = features.getJSONObject(i).getJSONObject("properties").optString("time");
-                System.out.println(time);
+
                 Date unix = new Date(Long.parseLong(time));
                 SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM, dd, yyyy");
                 String dateToDisplay = dateFormatter.format(unix);
-                System.out.println(dateToDisplay);
+
                 earthquakes.add(new EarthquakeData(dateToDisplay, mag, place, Long.parseLong(time), url));
             }
 

@@ -15,8 +15,9 @@
  */
 package com.example.android.quakereport;
 
+import android.app.LoaderManager;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.Loader;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -25,7 +26,11 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class EarthquakeActivity extends AppCompatActivity {
+//due toosupport.v4 imports for loader manager and loader the app can not complie use the proper imports
+
+public class EarthquakeActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<EarthquakeData>> {
+
+    final String USGS_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
 
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
     ListView earthquakeListView;
@@ -33,12 +38,13 @@ public class EarthquakeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
-        final String USGS_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
 
 
         earthquakeListView = (ListView) findViewById(R.id.list);
-        DownLoadtask task = new DownLoadtask();
-        task.execute(USGS_URL);
+
+        //create or get already available loader.
+        //params==unique id,saved bundle data,context of present application
+        getLoaderManager().initLoader(0, null, this);
 
         // Create a new {@link ArrayAdapter} of earthquakes
 
@@ -49,22 +55,24 @@ public class EarthquakeActivity extends AppCompatActivity {
 
     }
 
-    private class DownLoadtask extends AsyncTask<String, Void, ArrayList<EarthquakeData>> {
+    @Override
+    public Loader<ArrayList<EarthquakeData>> onCreateLoader(int id, Bundle args) {
+        return new LoaderEarthquake(getApplicationContext(), USGS_URL);
+    }
 
-        @Override
-        protected ArrayList<EarthquakeData> doInBackground(String... strings) {
-            ArrayList<EarthquakeData> earthquakes;
-            earthquakes = QueryUtils.getEarthquakeData(strings[0]);
-
-            return earthquakes;
+    @Override
+    public void onLoadFinished(Loader<ArrayList<EarthquakeData>> loader, ArrayList<EarthquakeData> data) {
+        if (data != null && !data.isEmpty()) {
+            updateUi(data);
         }
 
-        @Override
-        protected void onPostExecute(ArrayList<EarthquakeData> earthquakeDatas) {
-            updateUi(earthquakeDatas);
 
-            super.onPostExecute(earthquakeDatas);
-        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<EarthquakeData>> loader) {
+        updateUi(new ArrayList<EarthquakeData>());
+
     }
 
     private void updateUi(ArrayList<EarthquakeData> earthquakeDatas) {
